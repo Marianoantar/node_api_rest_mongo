@@ -1,0 +1,68 @@
+# PASOS PARA CREAR UNA APP NODE
+
+ 1. En el terminal de `VSCode` iniciar node: `node init`
+ 2. Instalar nodemon para que compile ante cualquier modifiicacion: `npm i nodemon --save-dev` (las opciones son para que se agregue como dependencias dev)
+ 3. Crear en Package.json un scripts de 'dev' que es el start para developers (desarrolladores)):`"dev":"nodemon src/app.js"` 
+ 4. Crear otro scripts tambien en `Package.json` para iniciar la app no en modo developer: `"start": "node src/app.js"`
+ 
+ # COMENZAR LA APP
+
+ - Agregar variables de entorno en archivo `.env`
+ - Crear archivo `.gitignore` y agregarle node_modules y .env para que no los suba al repositorio
+ - Creamos archivo de salida src/app.js
+ - Vamos a utilizar Mongoose para hacer los modelos, entonces creamos carpeta `models` y le agregamos el archivo `book.models.js`
+ - Tambien vamos a tener muchas rutas asi que creamos la carpeta `routes` y le agregamos el archivo `book.routes.js`
+ ## Nos concentramos en app.js
+ Instalamos 3 librerias que hacen falta en este punto para poder iniciar el servidor:
+ 
+ - express
+ - dotenv
+ - mongoose
+
+### Codigo
+const express = require('express');
+const mongoose = require('mongoose');
+const { config } = require('dotenv');
+config();
+
+const bookRoutes = require('./routes/book.routes')
+
+const app = express();
+
+const port = process.env.PORT || 3000;  // default port sino 3000
+
+app.listen(port, () => {
+    console.log(`Servidor iniciado en el puerto ${port}`);
+});
+
+
+Aqui ya podemos probar si inicia el servidor en el puerto indicado. Hacemos 'npm run dev'
+
+## El modelo
+Con Mongoose vamos a realizar el esquema que vamos a manejar en mongoDb.
+Instalamos `Mongoose`: `npm i mongoose`
+### Codigo
+const mongoose = require('mongoose');
+
+const bookSchema = new mongoose.Schema(
+    {
+        title: String,
+        author: String,
+        genre: String,
+        publication_date: String
+})
+
+// exportar como modelo de mongo 
+module.exports = mongoose.model('Book', bookSchema);    
+
+## LAS RUTAS
+En el archivo 'book.routes.js' es donde se manejan las rutas tanto para los procesos `GET` `GETALL` `PUT` `PATCH` `DELETE`
+
+
+## DOCKER
+Tenemos que dar de alta Docker para poder usar MongoDB de forma local en nuestra computadora. Estos son los pasos:
+ 1. En la carpeta raiz crear un archivo 'docker-compose.yml'. Hay que editarlo con las tabulaciones correctas sino podria no funcionar
+ 2. Bajar la ultima imagen de MongoDB. Para ello buscamos en el buscador 'hub docker mongo', elegir Docker hub - Imagen Oficial de Mongo
+
+## CONFIGURACION
+Para que funcione tenes que renombrar la plantilla ".env.template" a ".env" y llenar campos
